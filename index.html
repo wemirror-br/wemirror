@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WE MIRROR — Sua frase do dia</title>
+  <meta name="description" content="Escolha seu tema e receba uma frase motivacional exclusiva WE MIRROR." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #0e0d0b; --ink-soft: #4a4843; --ink-muted: #9a9690;
+      --gold: #c9a84c; --gold-light: #e8d5a0;
+      --bg: #f5f1ea; --bg-card: #faf8f4; --border: rgba(0,0,0,0.10);
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 300; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+    header { width: 100%; padding: 2.5rem 1.5rem 0; display: flex; flex-direction: column; align-items: center; }
+    .mirror-icon { width: 52px; height: 64px; margin-bottom: 1.25rem; }
+    .brand { font-family: 'Inter', sans-serif; font-weight: 500; font-size: 13px; letter-spacing: 0.3em; color: var(--ink-soft); text-transform: uppercase; }
+    .gold-line { width: 32px; height: 1px; background: var(--gold); margin: 1rem auto; }
+    .headline { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 6vw, 42px); font-weight: 400; line-height: 1.25; text-align: center; color: var(--ink); max-width: 480px; }
+    .sub { font-size: 14px; color: var(--ink-muted); text-align: center; margin-top: 0.75rem; line-height: 1.6; max-width: 340px; }
+    main { width: 100%; max-width: 480px; padding: 2.5rem 1.25rem 4rem; display: flex; flex-direction: column; align-items: center; }
+    .step-label { font-size: 11px; letter-spacing: 0.18em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 1rem; align-self: flex-start; }
+    .temas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 1.75rem; }
+    .tema-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; cursor: pointer; text-align: left; transition: border-color 0.2s, transform 0.15s; -webkit-tap-highlight-color: transparent; }
+    .tema-btn:hover { border-color: var(--gold-light); transform: translateY(-1px); }
+    .tema-btn.ativo { border-color: var(--gold); background: #fffbf2; }
+    .tema-icon { font-size: 20px; margin-bottom: 6px; display: block; line-height: 1; }
+    .tema-nome { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; color: var(--ink); display: block; }
+    .tema-desc { font-size: 11px; color: var(--ink-muted); margin-top: 2px; display: block; line-height: 1.4; }
+    .btn-revelar { width: 100%; height: 52px; background: var(--ink); color: var(--gold); border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.08em; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-bottom: 2rem; -webkit-tap-highlight-color: transparent; }
+    .btn-revelar:hover { background: #1e1d1a; transform: translateY(-1px); }
+    .btn-revelar:active { transform: scale(0.98); }
+    .btn-revelar:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .card-frase { width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.75rem 1.75rem; display: none; flex-direction: column; align-items: center; gap: 1.25rem; animation: fadeUp 0.5s ease forwards; }
+    .card-frase.visivel { display: flex; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .card-tema-tag { font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; font-weight: 500; }
+    .card-aspas { font-family: 'Cormorant Garamond', serif; font-size: 64px; color: var(--gold-light); line-height: 0.6; align-self: flex-start; margin-left: -4px; user-select: none; }
+    .card-texto { font-family: 'Cormorant Garamond', serif; font-size: clamp(20px, 5vw, 26px); font-weight: 400; font-style: italic; line-height: 1.55; color: var(--ink); text-align: center; }
+    .card-divider { width: 28px; height: 1px; background: var(--gold); }
+    .card-brand-footer { font-size: 11px; letter-spacing: 0.22em; color: var(--ink-muted); text-transform: uppercase; }
+    .card-dia { font-size: 11px; color: var(--ink-muted); margin-top: -8px; }
+    .acoes { width: 100%; display: none; flex-direction: column; gap: 10px; margin-top: 1.25rem; }
+    .acoes.visivel { display: flex; }
+    .btn-acao { width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, background 0.2s; letter-spacing: 0.02em; }
+    .btn-acao:hover { border-color: var(--gold-light); background: #fffbf2; }
+    .btn-nova { background: transparent; border: 1px solid var(--border); color: var(--ink-muted); }
+    footer { width: 100%; padding: 1.5rem; text-align: center; font-size: 11px; color: var(--ink-muted); letter-spacing: 0.05em; border-top: 1px solid var(--border); margin-top: auto; }
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--gold); font-size: 13px; padding: 10px 20px; border-radius: 100px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; z-index: 99; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    @media (max-width: 360px) { .temas { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <svg class="mirror-icon" viewBox="0 0 52 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="10" y="2" width="32" height="44" rx="16" stroke="#0e0d0b" stroke-width="1.5"/>
+    <rect x="16" y="8" width="20" height="32" rx="10" stroke="#c9a84c" stroke-width="1"/>
+    <line x1="26" y1="46" x2="26" y2="56" stroke="#0e0d0b" stroke-width="1.5"/>
+    <rect x="18" y="56" width="16" height="3" rx="1.5" fill="#0e0d0b"/>
+  </svg>
+  <span class="brand">We Mirror</span>
+  <div class="gold-line"></div>
+  <h1 class="headline">Qual é o seu reflexo hoje?</h1>
+  <p class="sub">Escolha o tema que fala com você agora e receba sua frase do dia.</p>
+</header>
+
+<main>
+  <span class="step-label">Escolha seu tema</span>
+  <div class="temas" role="group" aria-label="Temas motivacionais">
+    <button class="tema-btn" data-tema="autoconhecimento" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">🪞</span>
+      <span class="tema-nome">Autoconhecimento</span>
+      <span class="tema-desc">Quem você é de verdade</span>
+    </button>
+    <button class="tema-btn" data-tema="proposito" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">🧭</span>
+      <span class="tema-nome">Propósito</span>
+      <span class="tema-desc">Direção e visão de vida</span>
+    </button>
+    <button class="tema-btn" data-tema="coragem" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">🔥</span>
+      <span class="tema-nome">Coragem</span>
+      <span class="tema-desc">Agir apesar do medo</span>
+    </button>
+    <button class="tema-btn" data-tema="gratidao" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">🌿</span>
+      <span class="tema-nome">Gratidão</span>
+      <span class="tema-desc">Presença e abundância</span>
+    </button>
+    <button class="tema-btn" data-tema="crescimento" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">🌱</span>
+      <span class="tema-nome">Crescimento</span>
+      <span class="tema-desc">Evoluir a cada dia</span>
+    </button>
+    <button class="tema-btn" data-tema="reflexo" onclick="selecionarTema(this)" aria-pressed="false">
+      <span class="tema-icon">✨</span>
+      <span class="tema-nome">Reflexo</span>
+      <span class="tema-desc">Identidade e luz interior</span>
+    </button>
+  </div>
+
+  <button class="btn-revelar" id="btn-revelar" onclick="revelarFrase()" disabled>
+    Revelar minha frase
+  </button>
+
+  <div class="card-frase" id="card-frase" role="region" aria-live="polite" aria-label="Frase do dia">
+    <span class="card-tema-tag" id="card-tema-tag"></span>
+    <span class="card-aspas" aria-hidden="true">"</span>
+    <p class="card-texto" id="card-texto"></p>
+    <div class="card-divider"></div>
+    <span class="card-brand-footer">We Mirror</span>
+    <span class="card-dia" id="card-dia"></span>
+  </div>
+
+  <div class="acoes" id="acoes">
+    <button class="btn-acao" onclick="compartilhar()">Compartilhar esta frase</button>
+    <button class="btn-acao btn-nova" onclick="novaTema()">Escolher outro tema</button>
+  </div>
+</main>
+
+<footer>© We Mirror — Todos os direitos reservados</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const FRASES = {
+  autoconhecimento: [
+    "Quem você é quando ninguém está olhando é quem você realmente é",
+    "O espelho mostra o rosto, mas só você conhece a alma",
+    "Seu maior descobrimento começa onde o medo termina",
+    "Volte para si mesmo — é lá que tudo começa",
+    "Conhecer a si mesmo é o início de toda sabedoria",
+    "Você é o único espelho que não distorce a verdade",
+    "Pare de procurar fora o que só existe dentro de você",
+    "O reflexo que importa é o que você vê com os olhos fechados",
+    "Cada versão de você foi necessária para chegar até aqui",
+    "Sua essência nunca muda — apenas a luz que a ilumina",
+    "Você não precisa se provar para ninguém — apenas para si mesmo",
+    "Dentro de você existe uma versão que ainda não foi apresentada ao mundo",
+    "Autoconhecimento é o mapa que nenhum GPS consegue traçar",
+    "Você é mais do que o personagem que aprendeu a interpretar",
+    "Sua voz interior é a mais honesta que você vai ouvir hoje",
+    "Conheça seus limites para saber exatamente onde expandi-los",
+    "Não confunda quem você é com o que os outros precisam que você seja",
+    "O silêncio dentro de você guarda respostas que o barulho nunca revelará",
+    "Você tem camadas que nem você mesmo explorou ainda",
+    "Ser autêntico é o ato mais corajoso que existe",
+    "Suas contradições também fazem parte de quem você é",
+    "O que você evita encarar em si mesmo é exatamente o que precisa de atenção",
+    "Nenhuma máscara é mais pesada do que a que usamos para nós mesmos",
+    "Você não precisa se entender completamente para se aceitar inteiramente",
+    "O maior reencontro da sua vida é o reencontro com você mesmo",
+    "Suas crenças moldam seu mundo — escolha-as com cuidado",
+    "Você é o único narrador da sua história — conte-a com verdade",
+    "Observe seus padrões — eles dizem mais sobre você do que suas palavras",
+    "O que você ama sem precisar de aprovação é o que define quem você é",
+    "Toda vez que você age contra seus valores, você perde um pouco de si mesmo",
+    "Você é a soma de tudo que viveu e de tudo que ainda vai escolher",
+    "Não existe crescimento sem o desconforto de se enxergar de verdade",
+    "A clareza sobre quem você é protege você de tudo que não é para você",
+    "Você carrega dentro de si respostas que ainda não fez as perguntas certas",
+    "Seja curioso sobre si mesmo como você seria sobre um mistério fascinante",
+    "Cada emoção que você sente é uma mensagem de quem você realmente é",
+    "O autoconhecimento não tem fim — tem apenas camadas mais profundas",
+    "Você é sua própria obra-prima inacabada",
+    "Respeite quem você está se tornando — foi preciso muito para chegar aqui",
+    "Seus pensamentos mais honestos aparecem quando você para de se distrair",
+    "Não existe versão errada de você — existe a versão que ainda está se descobrindo",
+    "O que você admira nos outros existe dentro de você esperando ser cultivado",
+    "Você sabe mais sobre si mesmo do que acredita saber",
+    "Cada escolha revela um pedaço de quem você está escolhendo ser",
+    "A pessoa mais importante de conhecer bem é a que vive dentro de você",
+    "Você tem uma frequência única — não tente sintonizar a de ninguém",
+    "O que você sente com intensidade é o mapa do que mais importa para você",
+    "Não existe jornada mais desafiadora do que a jornada de volta para si mesmo",
+    "Você é mais complexo, rico e interessante do que qualquer rótulo que te deram",
+    "Sua intuição é a voz do que você já sabe mas ainda não se permitiu ouvir",
+    "O autoconhecimento não é encontrar respostas — é aprender a fazer melhores perguntas",
+    "Você não precisa se explicar para quem não tenta te entender",
+    "Cada vez que você age com integridade, constrói confiança em si mesmo",
+    "Você tem uma beleza interior que só aparece quando você para de se esconder",
+    "Não confunda seus medos com seus limites — eles são coisas bem diferentes",
+    "Quem você está se tornando é mais importante do que quem você foi",
+    "Você é o único ser capaz de te libertar das histórias que você conta sobre si",
+    "Sua singularidade não é um defeito — é seu maior recurso",
+    "O que você defende quando está sozinho diz tudo sobre seu caráter",
+    "Você sempre soube quem era — apenas esqueceu no meio do caminho",
+    "O espelho reflete sua aparência, mas seus atos revelam sua alma",
+    "Conhecer seus pontos cegos é o começo de uma visão mais ampla de si mesmo"
+  ],
+  proposito: [
+    "Um propósito claro ilumina até o caminho mais escuro",
+    "Você não encontra seu propósito — você o constrói, tijolo a tijolo",
+    "Viva de um jeito que faça sentido quando você olhar para trás",
+    "O que você faz com sua energia diz tudo sobre quem você é",
+    "Cada ação pequena é um passo na direção certa",
+    "Propósito não é destino — é a direção que você escolhe todo dia",
+    "O mundo precisa daquilo que só você pode oferecer",
+    "Quando o porquê é forte, o como aparece",
+    "Seu legado é construído nas escolhas que ninguém vê",
+    "Tenha uma razão maior do que o medo",
+    "Uma vida com propósito não precisa ser perfeita — precisa ser verdadeira",
+    "O que você faria mesmo sem ser pago por isso revela seu propósito",
+    "Não existe atalho para uma vida que valha a pena",
+    "Seu propósito não precisa mudar o mundo — precisa mudar o seu mundo",
+    "Quando você serve ao seu propósito, o tempo passa diferente",
+    "Aquilo que você não consegue parar de pensar é um sinal do que você deve fazer",
+    "Propósito é a âncora que te mantém firme quando tudo ao redor oscila",
+    "O que você construiria mesmo sabendo que vai demorar muito?",
+    "Você não precisa de permissão para viver o que te faz sentido",
+    "Uma vida sem propósito é como um espelho sem reflexo",
+    "Faça algo hoje que o seu eu do futuro agradeça",
+    "Seu propósito não precisa ter nome — precisa ter movimento",
+    "Contribuir para algo maior do que você mesmo é a raiz de toda satisfação profunda",
+    "O que você quer deixar para quem vem depois de você?",
+    "Viver com propósito é a forma mais completa de se respeitar",
+    "Não espere a inspiração — construa o hábito e a inspiração vem junto",
+    "O que move você quando ninguém está assistindo é seu propósito real",
+    "Uma pequena ação alinhada ao seu propósito vale mais que mil grandes planos",
+    "Você foi feito para mais do que apenas existir",
+    "O propósito não elimina os obstáculos — ele te dá força para atravessá-los",
+    "Quando você encontra sua missão, o cansaço tem um gosto diferente",
+    "Viva de forma que suas escolhas precisem de pouca explicação",
+    "Seu tempo é o recurso mais escasso que você tem — use-o com intenção",
+    "Propósito sem ação é apenas um sonho bonito",
+    "O que você faria se soubesse que não pode falhar?",
+    "Cada dia vivido com intenção é um dia que não foi desperdiçado",
+    "Seu propósito pode ser simples — e ainda assim ser poderoso",
+    "O que te faz sentir vivo é o fio condutor do seu propósito",
+    "Não existe trabalho pequeno quando está a serviço de algo grande",
+    "Você tem um chamado único — atender a ele é sua responsabilidade",
+    "O significado que você dá às suas ações transforma tudo",
+    "Propósito é o que transforma uma tarefa comum em algo sagrado",
+    "Quando você age com propósito, até os fracassos ensinam algo valioso",
+    "Você não precisa entender todo o caminho — só o próximo passo",
+    "Uma vida bem vivida não é uma vida sem erros — é uma vida com direção",
+    "O que te mantém acordado à noite pode ser exatamente o que vai te sustentar",
+    "Seu propósito é a resposta que você dá à pergunta: por que estou aqui?",
+    "Nada é mais motivador do que saber que o que você faz importa",
+    "Propósito não nasce — é cultivado com escolhas repetidas e conscientes",
+    "Você está onde está porque escolheu algo — escolha agora com mais intenção",
+    "O que dá sentido à sua manhã determina o que você constrói ao longo do dia",
+    "Quando o propósito guia, os recursos aparecem de formas inesperadas",
+    "Sua visão de futuro é o combustível do seu presente",
+    "O que você criaria se não precisasse de validação de ninguém?",
+    "Cada sacrifício feito pelo propósito certo tem um retorno invisível mas real",
+    "O que você quer que as pessoas sintam ao interagir com o que você cria?",
+    "Propósito é a diferença entre existir e verdadeiramente viver",
+    "Você tem um papel que ninguém mais pode desempenhar — descubra qual é",
+    "Não espere estar pronto para começar — comece para estar pronto",
+    "O que você constrói hoje com intenção é o que vai te sustentar amanhã",
+    "Seu propósito não é uma chegada — é uma forma de caminhar"
+  ],
+  coragem: [
+    "A coragem não é ausência de medo — é agir apesar dele",
+    "O maior risco é nunca arriscar nada",
+    "Dê o primeiro passo mesmo sem ver toda a escada",
+    "Coragem é o músculo que cresce quando você o usa",
+    "Você já sobreviveu a tudo que tentou te parar",
+    "O outro lado do medo é onde sua vida acontece de verdade",
+    "Aja agora — o momento perfeito nunca vai chegar",
+    "Seja corajoso o suficiente para ser você mesmo",
+    "Cada queda foi um ensaio para a sua maior levantada",
+    "A versão de você que age vale mais do que a que planeja",
+    "Coragem é dizer não quando todo mundo espera que você diga sim",
+    "Você é mais forte do que qualquer desafio que já enfrentou",
+    "Arriscar e falhar ainda é melhor do que nunca ter tentado",
+    "O medo avisa — a coragem decide",
+    "Não espere sentir coragem para agir — aja para sentir coragem",
+    "A vida começa onde a zona de conforto termina",
+    "Toda grande história tem um momento em que o herói decide agir",
+    "O fracasso que você teme ensina mais do que o sucesso que você evita",
+    "Seja honesto mesmo quando a verdade é difícil — isso é coragem real",
+    "Você não precisa estar sem medo — precisa estar comprometido",
+    "Coragem é escolher crescer quando é mais fácil ficar parado",
+    "O que você postergou por medo merece uma nova chance hoje",
+    "Nenhuma armadura protege mais do que a coragem de ser vulnerável",
+    "Cair não é fracasso — recusar-se a levantar é",
+    "A coragem de recomeçar é tão grande quanto a de começar",
+    "Você tem mais recursos internos do que imagina — acesse-os",
+    "Cada vez que você age com coragem, expande o que é possível para você",
+    "Não deixe o medo do julgamento alheio paralisar a sua vida",
+    "Seja ousado o suficiente para errar na direção certa",
+    "O que você evitou por tanto tempo pode ser exatamente o que mais precisa de você",
+    "Coragem não é não sentir medo — é sentir e continuar assim mesmo",
+    "Você sobreviveu a dias que pareciam impossíveis — este também vai passar",
+    "A diferença entre quem chega e quem desiste é a disposição de continuar",
+    "Fazer a escolha difícil agora é um presente para o seu eu do futuro",
+    "Cada passo fora da zona de conforto expande o território da sua vida",
+    "Você não precisa ver o caminho inteiro — só precisa dar o próximo passo",
+    "A coragem de ser diferente é a raiz de toda originalidade",
+    "Não existe conquista sem algum grau de desconforto enfrentado",
+    "O que você quer construir merece que você enfrente o que te assusta",
+    "Coragem também é saber quando parar e mudar de direção",
+    "Você tem dentro de si uma reserva de força que o medo ainda não deixou ver",
+    "Cada desafio é um convite para descobrir o quanto você é capaz",
+    "Prefira o arrependimento de ter tentado ao de nunca ter ousado",
+    "A coragem de pedir ajuda é tão grande quanto a de agir sozinho",
+    "Você foi feito para enfrentar momentos difíceis — e superá-los",
+    "O que você tem medo de perder pode ser exatamente o que te prende",
+    "Agir com imperfeição é sempre melhor do que a perfeição que nunca acontece",
+    "Coragem é confiar em si mesmo quando ninguém mais ainda consegue ver",
+    "O presente corajoso que você dá a si mesmo é um futuro mais livre",
+    "Cada obstáculo superado aumenta sua crença no que ainda pode superar",
+    "A vida recompensa quem decide agir mesmo sem garantias",
+    "Você tem mais a ganhar sendo corajoso do que tem a perder sendo cauteloso demais",
+    "Coragem é o que transforma um sonho em um plano e um plano em realidade",
+    "Não subestime o poder de um único ato corajoso no dia de hoje",
+    "O que você mais teme pode ser o portal para o que mais deseja",
+    "Seja mais fiel ao seu potencial do que aos seus medos",
+    "A coragem silenciosa de continuar é muitas vezes a mais poderosa",
+    "Você não precisa de condições perfeitas — precisa de uma decisão real",
+    "Cada limite que você quebra revela um novo horizonte possível",
+    "O futuro pertence a quem decide agir hoje mesmo com o coração acelerado",
+    "Coragem não é ausência de dúvida — é seguir em frente apesar dela"
+  ],
+  gratidao: [
+    "Gratidão transforma o que temos em suficiente",
+    "Quem nota as pequenas bênçãos encontra as grandes com mais frequência",
+    "Presença plena é o presente mais raro que você pode se dar",
+    "O agora é o único lugar onde a vida realmente acontece",
+    "Agradeça antes de receber — essa é a verdadeira abundância",
+    "Sua história tem beleza que você ainda não percebeu",
+    "Olhe ao redor — há mais graça do que o olho apressado enxerga",
+    "O que você aprecia, aprecia em valor",
+    "Viva devagar o suficiente para notar o que importa",
+    "Cada dia vivido é um presente que não pode ser devolvido",
+    "Gratidão não é fingir que tudo está bem — é reconhecer o bem que existe",
+    "O que você tem hoje já foi o que você pediu um dia",
+    "Agradecer é a forma mais simples e poderosa de mudar sua perspectiva",
+    "Presença é o maior presente que você pode oferecer a quem você ama",
+    "Você tem muito mais do que percebe quando para para contar",
+    "A gratidão abre portas que o esforço sozinho não consegue abrir",
+    "Cada amanhecer é uma segunda chance que não precisava ter sido dada",
+    "Não espere as grandes conquistas para sentir gratidão — ela mora nos detalhes",
+    "Quem é grato pelo pouco está preparado para receber o muito",
+    "A beleza ao redor sempre existiu — o que muda é a atenção que você dedica a ela",
+    "Agradeça pelo caminho mesmo quando ele parece longo demais",
+    "O momento presente sempre será — trate-o com cuidado",
+    "Cada pessoa que cruzou seu caminho trouxe algo necessário",
+    "Gratidão é lembrar que você já chegou longe o suficiente para olhar para trás",
+    "Você tem motivos para agradecer que nem percebe que existem",
+    "Uma mente grata é uma mente em paz",
+    "O suficiente é muito quando você é capaz de reconhecê-lo",
+    "Cada dificuldade superada merece tanto reconhecimento quanto cada conquista",
+    "Estar vivo hoje já é um milagre que merece reverência",
+    "A gratidão não elimina os problemas — ela muda a forma como você os carrega",
+    "Você tem pessoas, memórias e capacidades que muitos gostariam de ter",
+    "Quando você agradece, o universo entende que você está pronto para mais",
+    "Viver com gratidão é uma forma de honrar o que te foi dado",
+    "O que seria da sua vida sem aquele detalhe que você ignora todos os dias?",
+    "Cada respiração é uma afirmação de que você ainda tem muito a fazer aqui",
+    "Gratidão é a prática que transforma o ordinário em extraordinário",
+    "Você não precisa esperar a tempestade passar para agradecer pela chuva",
+    "A beleza da sua história está nos capítulos que você ainda não leu",
+    "Cada cicatriz é a prova de que você foi ferido e ainda assim continuou",
+    "Agradecer com consistência é o hábito mais transformador que existe",
+    "O que você recebeu sem pedir merece tanto reconhecimento quanto o que conquistou",
+    "Há uma riqueza invisível na sua vida que a gratidão torna visível",
+    "Viver no presente é o único lugar onde a gratidão pode habitar de verdade",
+    "Cada conexão genuína que você tem é um tesouro que não tem preço",
+    "A gratidão é a memória do coração — ela lembra do que importou de verdade",
+    "O que você tem hoje já seria suficiente para mudar a vida de alguém",
+    "Ser grato é reconhecer que você não chegou até aqui sozinho",
+    "Cada amanhecer é uma página em branco — qual história você vai escrever hoje?",
+    "A vida não precisa ser perfeita para ser boa — e boa já é muito",
+    "Gratidão não é uma emoção — é uma prática que você escolhe todos os dias",
+    "O que você toma como certo hoje pode ser o que vai sentir falta amanhã",
+    "Agradecer é o ato de dizer ao universo: recebi e reconheço",
+    "Sua jornada tem uma beleza única que nenhum outro caminho tem",
+    "Viver com leveza começa com a prática diária de notar o que está bem",
+    "Você tem uma história de sobrevivência que merece ser celebrada",
+    "Cada detalhe da sua vida tem um peso que você ainda vai entender",
+    "A gratidão silenciosa que você sente ao olhar para o céu é também uma oração",
+    "O que é simples muitas vezes é o que mais transforma",
+    "Você é a resposta de uma pergunta que alguém fez ao universo com muito amor",
+    "Gratidão é a linguagem que o coração usa quando está em paz",
+    "Viver atento ao belo é uma forma de gratidão constante"
+  ],
+  crescimento: [
+    "Você não precisa estar pronto — só precisa começar",
+    "Cada versão melhor de você foi construída na versão anterior",
+    "O desconforto é o sinal de que você está crescendo",
+    "Progrida — nem que seja um milímetro por dia",
+    "A pessoa que você quer ser já existe dentro de você",
+    "Não compare seu capítulo 3 com o capítulo 20 de alguém",
+    "Crescimento real acontece devagar e em silêncio",
+    "Você é uma obra em andamento — e isso é bonito",
+    "Cada obstáculo foi um professor disfarçado",
+    "O único limite que importa é o que você coloca em si mesmo",
+    "Evoluir não é abandonar quem você foi — é honrar quem você está se tornando",
+    "O crescimento começa no momento em que você decide que pode ser diferente",
+    "Um por cento melhor a cada dia resulta em uma transformação completa em um ano",
+    "Você não precisa de grandes saltos — só de pequenos passos consistentes",
+    "O que você aprende nas derrotas é o que forma os vencedores",
+    "Crescer é doloroso — mas estagnar é mais doloroso ainda",
+    "Cada hábito que você cultiva hoje molda a pessoa que você será amanhã",
+    "Você já foi o iniciante de algo que hoje faz com facilidade — lembre disso",
+    "Nenhum aprendizado é desperdiçado — tudo tem seu momento de uso",
+    "O maior investimento que existe é o investimento em si mesmo",
+    "Crescimento não é linear — é espiral, e cada volta te eleva um pouco mais",
+    "Você aprende mais sobre si mesmo nos momentos difíceis do que nos fáceis",
+    "Não tenha pressa — tenha constância",
+    "Cada livro lido, cada conversa honesta, cada erro analisado te torna maior",
+    "O seu crescimento não precisa da aprovação de ninguém",
+    "A disciplina de hoje é a liberdade de amanhã",
+    "Você se torna aquilo que pratica com consistência",
+    "Crescer exige soltar versões antigas de si mesmo — e isso é libertador",
+    "Não existe platô permanente — existe falta de novo desafio",
+    "O que te tirou do sério ontem precisa de menos de você hoje — isso é crescimento",
+    "Cada pequena melhoria composta cria uma grande transformação ao longo do tempo",
+    "Você não precisa mudar tudo — mude uma coisa importante e observe o efeito",
+    "O melhor momento para crescer foi ontem, o segundo melhor é agora",
+    "Crescimento é sobre se tornar mais, não sobre provar para os outros",
+    "Cada vez que você enfrenta o desconforto voluntariamente, você cresce",
+    "O que você faz repetidamente é o que você está se tornando",
+    "Não espere motivação para agir — aja para criar motivação",
+    "Cada aprendizado que dói é o que mais permanece",
+    "Você tem uma capacidade de adaptação que ainda subestima",
+    "O crescimento não acontece no conforto — acontece na borda do que você sabe",
+    "Quem você será em cinco anos depende do que você decide fazer hoje",
+    "Não meça seu progresso pelo de outros — meça pelo de ontem",
+    "Cada mudança começa com uma decisão tomada em silêncio",
+    "Você já passou por transformações que pareciam impossíveis — esta também vai acontecer",
+    "Crescimento real não aparece no espelho — aparece nas suas respostas ao mundo",
+    "O que você está disposto a praticar é o que você vai dominar",
+    "Celebre cada progresso, por menor que pareça — ele importa",
+    "Você é capaz de aprender qualquer coisa que decidir aprender de verdade",
+    "O crescimento que não é compartilhado ainda é crescimento — e é valioso",
+    "Cada vez que você escolhe aprender em vez de defender, você avança",
+    "Não existe fracasso — existe feedback para a próxima tentativa",
+    "Você tem o poder de reescrever qualquer padrão que não te serve mais",
+    "Crescer é perceber que você era maior do que pensava ser",
+    "O que parecia um teto vira um piso quando você decide continuar subindo",
+    "Cada novo patamar exige uma nova versão de você — e você é capaz",
+    "O crescimento começa quando você para de esperar as condições certas",
+    "Você não precisa de sorte — precisa de consistência e paciência",
+    "Cada esforço discreto hoje é um resultado visível amanhã",
+    "Crescimento é o compromisso silencioso que você faz com o seu potencial",
+    "O que você conquista com dificuldade tem um valor que o fácil nunca terá",
+    "Você é mais capaz do que qualquer versão passada poderia imaginar"
+  ],
+  reflexo: [
+    "Você é o espelho do que escolhe acreditar sobre si mesmo",
+    "O mundo ao redor reflete o mundo que há dentro de você",
+    "Sua luz não apaga a dos outros — ela convida novas luzes",
+    "Seja o reflexo que inspira outros a se enxergarem melhor",
+    "O que você projeta no mundo, o mundo devolve amplificado",
+    "Cuide da sua imagem interior — ela molda tudo que está fora",
+    "Você é o espelho — e o que reflete é sempre sua escolha",
+    "A clareza que você busca começa quando para de se esconder de si",
+    "Seu reflexo mais honesto não está no espelho — está nas suas ações",
+    "Seja tão autêntico que seu reflexo te surpreenda",
+    "O espelho nunca mente — mas a interpretação que fazemos dele pode",
+    "Você reflete para o mundo aquilo que cultiva internamente",
+    "Quando você se enxerga com bondade, enxerga o mundo com mais bondade também",
+    "Seu reflexo muda quando você muda a forma de se olhar",
+    "Seja para alguém hoje o reflexo de que tudo pode melhorar",
+    "O que você emana é o que você atrai — cuide da sua energia",
+    "Um espelho limpo mostra o que é — cuide da clareza do seu interior",
+    "Você é o espelho que outras pessoas usam para se enxergar — seja gentil",
+    "Seu caráter é o reflexo mais permanente que você vai deixar no mundo",
+    "O que existe dentro de você inevitavelmente aparece fora de você",
+    "Reflita a versão do mundo que você deseja habitar",
+    "Você tem o poder de ser o espelho que alguém precisava ver hoje",
+    "Quanto mais você se conhece, mais nítido fica o seu reflexo no mundo",
+    "Sua presença reflete algo único — não diminua sua luz para caber em lugares menores",
+    "Você reflete esperança quando age com esperança mesmo sem certezas",
+    "O que você devolve ao mundo é o legado invisível que você está construindo",
+    "Ser um reflexo positivo não significa ser perfeito — significa ser genuíno",
+    "Você transforma o ambiente ao redor pela forma como escolhe se portar nele",
+    "O cuidado que você tem consigo mesmo se reflete no cuidado que tem com o mundo",
+    "Quando você cresce, as pessoas ao seu redor têm a chance de crescer também",
+    "Você é o resultado visível das escolhas invisíveis que fez ao longo do tempo",
+    "Seu sorriso genuíno é um espelho que convida outros a encontrarem o próprio",
+    "A forma como você trata as pessoas reflete o que você acredita sobre si mesmo",
+    "Você reflete coragem toda vez que age com honestidade",
+    "O que você constrói dentro reflete para fora — sem exceção",
+    "Ser autêntico é oferecer ao mundo um reflexo real, não uma imagem editada",
+    "Você é o espelho do seu tempo — o que quer mostrar para ele?",
+    "Cada gesto de generosidade que você tem reflete de volta em forma de abundância",
+    "O reflexo mais poderoso que você pode oferecer é o da sua transformação real",
+    "Você inspira sem perceber — seu exemplo fala mais alto que suas palavras",
+    "Quando você vive com integridade, seu reflexo no mundo é cristalino",
+    "A forma como você se enxerga determina a forma como o mundo te vê",
+    "Você é um espelho único — cuide para que reflita o que há de mais verdadeiro em você",
+    "Seu reflexo no mundo melhora conforme você melhora a relação consigo mesmo",
+    "Cada atitude de amor próprio que você tem reflete em como você ama os outros",
+    "O mundo é um espelho que responde à vibração que você escolhe emitir",
+    "Você reflete transformação toda vez que escolhe crescer em vez de reclamar",
+    "Ser o reflexo que inspira começa por ser o reflexo que você precisava ver um dia",
+    "O que você reflete hoje é diferente do que refletia antes — isso é crescimento",
+    "Você tem a capacidade de refletir paz mesmo em tempos de turbulência",
+    "Cada palavra sua é um espelho — use-a para mostrar o melhor que existe nas pessoas",
+    "O reflexo que você projeta tem o poder de mudar o dia de alguém",
+    "Sua identidade não é fixa — é um reflexo em constante evolução",
+    "Você reflete confiança toda vez que age alinhado com seus valores",
+    "O espelho mais poderoso que existe é o olhar genuíno de quem te conhece de verdade",
+    "Ser o reflexo certo para alguém pode mudar o rumo da vida dessa pessoa",
+    "Você é o resultado visível de um processo interno que poucos veem",
+    "Cada vez que você escolhe a luz, você se torna um reflexo dela para o mundo",
+    "O que o espelho mostra depende de onde você está em pé — escolha bem seu lugar",
+    "Você é simultaneamente o espelho e o reflexo — cuide de ambos",
+    "Seu reflexo mais autêntico é o que aparece quando você para de se comparar"
+  ]
+};
+
+// Seleciona frase pelo dia do ano — mesma frase para todos no mesmo dia
+function indiceDoDia(total) {
+  const now = new Date();
+  const inicio = new Date(now.getFullYear(), 0, 0);
+  const diff = now - inicio;
+  const umDia = 1000 * 60 * 60 * 24;
+  const diaDoAno = Math.floor(diff / umDia);
+  return diaDoAno % total;
+}
+
+const NOMES_TEMA = {
+  autoconhecimento: "Autoconhecimento",
+  proposito: "Propósito",
+  coragem: "Coragem",
+  gratidao: "Gratidão",
+  crescimento: "Crescimento",
+  reflexo: "Reflexo"
+};
+
+let temaAtivo = null;
+let fraseAtual = '';
+
+function selecionarTema(el) {
+  document.querySelectorAll('.tema-btn').forEach(b => {
+    b.classList.remove('ativo');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  el.classList.add('ativo');
+  el.setAttribute('aria-pressed', 'true');
+  temaAtivo = el.dataset.tema;
+  document.getElementById('btn-revelar').disabled = false;
+  document.getElementById('card-frase').classList.remove('visivel');
+  document.getElementById('acoes').classList.remove('visivel');
+}
+
+function revelarFrase() {
+  if (!temaAtivo) return;
+  const lista = FRASES[temaAtivo];
+  const idx = indiceDoDia(lista.length);
+  fraseAtual = lista[idx];
+
+  document.getElementById('card-tema-tag').textContent = NOMES_TEMA[temaAtivo];
+  document.getElementById('card-texto').textContent = fraseAtual;
+
+  const hoje = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('card-dia').textContent = hoje;
+
+  const card = document.getElementById('card-frase');
+  card.classList.remove('visivel');
+  void card.offsetWidth;
+  card.classList.add('visivel');
+  document.getElementById('acoes').classList.add('visivel');
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function novaTema() {
+  document.querySelectorAll('.tema-btn').forEach(b => {
+    b.classList.remove('ativo');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  temaAtivo = null;
+  document.getElementById('btn-revelar').disabled = true;
+  document.getElementById('card-frase').classList.remove('visivel');
+  document.getElementById('acoes').classList.remove('visivel');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function compartilhar() {
+  if (!fraseAtual) return;
+  const texto = '"' + fraseAtual + '" — WE MIRROR';
+  if (navigator.share) {
+    navigator.share({ text: texto, url: window.location.href }).catch(() => copiarTexto(texto));
+  } else {
+    copiarTexto(texto);
+  }
+}
+
+function copiarTexto(texto) {
+  navigator.clipboard.writeText(texto).then(() => mostrarToast('Frase copiada!'));
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
