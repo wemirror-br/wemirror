@@ -53,6 +53,36 @@
     .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--gold); font-size: 13px; padding: 10px 20px; border-radius: 100px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; z-index: 99; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     @media (max-width: 360px) { .temas { grid-template-columns: 1fr; } }
+
+    /* ── TELA DE GÊNERO ── */
+    .tela { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .tela.ativa { display: flex; }
+
+    .generos { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+    .genero-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .genero-btn:hover { border-color: var(--gold-light); transform: translateY(-1px); }
+    .genero-icon { font-size: 26px; line-height: 1; flex-shrink: 0; }
+    .genero-text { text-align: left; }
+    .genero-nome { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); display: block; }
+    .genero-desc { font-size: 12px; color: var(--ink-muted); margin-top: 2px; display: block; }
+
+    .btn-voltar {
+      background: none; border: none; cursor: pointer;
+      font-size: 12px; color: var(--ink-muted);
+      display: flex; align-items: center; gap: 4px;
+      align-self: flex-start; margin-bottom: 1rem;
+      padding: 4px 0;
+    }
+    .btn-voltar:hover { color: var(--ink-soft); }
   </style>
 </head>
 <body>
@@ -65,61 +95,92 @@
   </svg>
   <span class="brand">We Mirror</span>
   <div class="gold-line"></div>
-  <h1 class="headline">Qual é o seu reflexo hoje?</h1>
-  <p class="sub">Escolha o tema que fala com você agora e receba sua frase do dia.</p>
+  <h1 class="headline" id="headline">Qual é o seu reflexo hoje?</h1>
+  <p class="sub" id="sub-headline">Antes de tudo, como você se identifica?</p>
 </header>
 
 <main>
-  <span class="step-label">Escolha seu tema</span>
-  <div class="temas" role="group" aria-label="Temas motivacionais">
-    <button class="tema-btn" data-tema="autoconhecimento" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">🪞</span>
-      <span class="tema-nome">Autoconhecimento</span>
-      <span class="tema-desc">Quem você é de verdade</span>
-    </button>
-    <button class="tema-btn" data-tema="proposito" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">🧭</span>
-      <span class="tema-nome">Propósito</span>
-      <span class="tema-desc">Direção e visão de vida</span>
-    </button>
-    <button class="tema-btn" data-tema="coragem" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">🔥</span>
-      <span class="tema-nome">Coragem</span>
-      <span class="tema-desc">Agir apesar do medo</span>
-    </button>
-    <button class="tema-btn" data-tema="gratidao" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">🌿</span>
-      <span class="tema-nome">Gratidão</span>
-      <span class="tema-desc">Presença e abundância</span>
-    </button>
-    <button class="tema-btn" data-tema="crescimento" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">🌱</span>
-      <span class="tema-nome">Crescimento</span>
-      <span class="tema-desc">Evoluir a cada dia</span>
-    </button>
-    <button class="tema-btn" data-tema="reflexo" onclick="selecionarTema(this)" aria-pressed="false">
-      <span class="tema-icon">✨</span>
-      <span class="tema-nome">Reflexo</span>
-      <span class="tema-desc">Identidade e luz interior</span>
-    </button>
+  <!-- ── TELA 1: GÊNERO ── -->
+  <div class="tela ativa" id="tela-genero">
+    <div class="generos" role="group" aria-label="Identificação">
+      <button class="genero-btn" data-genero="feminino" onclick="selecionarGenero('feminino')">
+        <span class="genero-icon">♀</span>
+        <span class="genero-text">
+          <span class="genero-nome">Feminino</span>
+          <span class="genero-desc">Frases com olhar de força e acolhimento feminino</span>
+        </span>
+      </button>
+      <button class="genero-btn" data-genero="masculino" onclick="selecionarGenero('masculino')">
+        <span class="genero-icon">♂</span>
+        <span class="genero-text">
+          <span class="genero-nome">Masculino</span>
+          <span class="genero-desc">Frases com olhar de força e propósito masculino</span>
+        </span>
+      </button>
+      <button class="genero-btn" data-genero="geral" onclick="selecionarGenero('geral')">
+        <span class="genero-icon">✦</span>
+        <span class="genero-text">
+          <span class="genero-nome">Prefiro não dizer</span>
+          <span class="genero-desc">Frases universais, sem recorte de gênero</span>
+        </span>
+      </button>
+    </div>
   </div>
 
-  <button class="btn-revelar" id="btn-revelar" onclick="revelarFrase()" disabled>
-    Revelar minha frase
-  </button>
+  <!-- ── TELA 2: TEMA ── -->
+  <div class="tela" id="tela-tema">
+    <button class="btn-voltar" onclick="voltarParaGenero()">← Voltar</button>
+    <span class="step-label">Escolha seu tema</span>
+    <div class="temas" role="group" aria-label="Temas motivacionais">
+      <button class="tema-btn" data-tema="autoconhecimento" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">🪞</span>
+        <span class="tema-nome">Autoconhecimento</span>
+        <span class="tema-desc">Quem você é de verdade</span>
+      </button>
+      <button class="tema-btn" data-tema="proposito" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">🧭</span>
+        <span class="tema-nome">Propósito</span>
+        <span class="tema-desc">Direção e visão de vida</span>
+      </button>
+      <button class="tema-btn" data-tema="coragem" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">🔥</span>
+        <span class="tema-nome">Coragem</span>
+        <span class="tema-desc">Agir apesar do medo</span>
+      </button>
+      <button class="tema-btn" data-tema="gratidao" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">🌿</span>
+        <span class="tema-nome">Gratidão</span>
+        <span class="tema-desc">Presença e abundância</span>
+      </button>
+      <button class="tema-btn" data-tema="crescimento" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">🌱</span>
+        <span class="tema-nome">Crescimento</span>
+        <span class="tema-desc">Evoluir a cada dia</span>
+      </button>
+      <button class="tema-btn" data-tema="reflexo" onclick="selecionarTema(this)" aria-pressed="false">
+        <span class="tema-icon">✨</span>
+        <span class="tema-nome">Reflexo</span>
+        <span class="tema-desc">Identidade e luz interior</span>
+      </button>
+    </div>
 
-  <div class="card-frase" id="card-frase" role="region" aria-live="polite" aria-label="Frase do dia">
-    <span class="card-tema-tag" id="card-tema-tag"></span>
-    <span class="card-aspas" aria-hidden="true">"</span>
-    <p class="card-texto" id="card-texto"></p>
-    <div class="card-divider"></div>
-    <span class="card-brand-footer">We Mirror</span>
-    <span class="card-dia" id="card-dia"></span>
-  </div>
+    <button class="btn-revelar" id="btn-revelar" onclick="revelarFrase()" disabled>
+      Revelar minha frase
+    </button>
 
-  <div class="acoes" id="acoes">
-    <button class="btn-acao" onclick="compartilhar()">Compartilhar esta frase</button>
-    <button class="btn-acao btn-nova" onclick="novaTema()">Escolher outro tema</button>
+    <div class="card-frase" id="card-frase" role="region" aria-live="polite" aria-label="Frase do dia">
+      <span class="card-tema-tag" id="card-tema-tag"></span>
+      <span class="card-aspas" aria-hidden="true">"</span>
+      <p class="card-texto" id="card-texto"></p>
+      <div class="card-divider"></div>
+      <span class="card-brand-footer">We Mirror</span>
+      <span class="card-dia" id="card-dia"></span>
+    </div>
+
+    <div class="acoes" id="acoes">
+      <button class="btn-acao" onclick="compartilhar()">Compartilhar esta frase</button>
+      <button class="btn-acao btn-nova" onclick="novaTema()">Escolher outro tema</button>
+    </div>
   </div>
 </main>
 
@@ -509,6 +570,65 @@ const FRASES = {
   ]
 };
 
+// ── Frases extras com recorte de gênero — somadas às 367 já existentes ──
+const FRASES_FEMININO = {
+  autoconhecimento: [
+    "Você não precisa se encolher para caber em lugar nenhum — sua grandeza é o seu lugar",
+    "O poder feminino começa quando você define que não existe limite",
+    "Mulher que se conhece não pede licença para existir por inteiro"
+  ],
+  proposito: [
+    "Seu propósito não cabe em padrões que outros tentaram te ensinar a seguir",
+    "Você nasceu para liderar sua própria história, não para coadjuvante na de ninguém"
+  ],
+  coragem: [
+    "Toda mulher que decide ser livre já é, por si só, um ato de coragem",
+    "Sua força não precisa de validação — ela já nasceu inteira dentro de você",
+    "Coragem de mulher é silenciosa, mas constrói impérios"
+  ],
+  gratidao: [
+    "Agradeça por cada vez que você escolheu se levantar e seguir mesmo cansada",
+    "Honre a mulher que você é hoje — ela é fruto de muita resistência e fé"
+  ],
+  crescimento: [
+    "Mulheres que crescem juntas não competem — elas se completam",
+    "Cada ciclo que você atravessa te aproxima da versão mais livre de si mesma"
+  ],
+  reflexo: [
+    "Você reflete a força de gerações de mulheres que vieram antes de você",
+    "Seja o espelho que mostra para outras mulheres que é possível florescer mesmo na pressa do mundo"
+  ]
+};
+
+const FRASES_MASCULINO = {
+  autoconhecimento: [
+    "Força de verdade é admitir o que você sente, não escondê-lo",
+    "Conhecer-se profundamente é o ato mais corajoso que um homem pode fazer"
+  ],
+  proposito: [
+    "Seu valor não está no que você produz, mas em quem você escolhe ser",
+    "Construir algo que importa exige mais coragem do que aparentar estar bem"
+  ],
+  coragem: [
+    "Pedir ajuda também é uma forma de força — talvez a mais verdadeira de todas",
+    "Coragem não é nunca ter medo — é mostrar quem você é mesmo com ele",
+    "Ser vulnerável na frente de quem você ama é a coragem mais alta que existe"
+  ],
+  gratidao: [
+    "Reconhecer o que você sente, sem julgamento, também é gratidão por si mesmo",
+    "Agradeça por cada momento em que escolheu ser presente, não apenas provedor"
+  ],
+  crescimento: [
+    "Um homem que evolui não tem medo de admitir quando estava errado",
+    "Crescer é também aprender a desconstruir o que te ensinaram que era força"
+  ],
+  reflexo: [
+    "Seja o reflexo de um homem que constrói com presença, não apenas com ausência produtiva",
+    "O exemplo que você dá vale mais que qualquer discurso que você possa fazer"
+  ]
+};
+
+
 // Seleciona frase pelo dia do ano — mesma frase para todos no mesmo dia
 function indiceDoDia(total) {
   const now = new Date();
@@ -529,7 +649,37 @@ const NOMES_TEMA = {
 };
 
 let temaAtivo = null;
+let generoAtivo = null;
 let fraseAtual = '';
+
+function selecionarGenero(genero) {
+  generoAtivo = genero;
+  document.getElementById('tela-genero').classList.remove('ativa');
+  document.getElementById('tela-tema').classList.add('ativa');
+
+  const sub = document.getElementById('sub-headline');
+  sub.textContent = 'Escolha o tema que fala com você agora e receba sua frase do dia.';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function voltarParaGenero() {
+  document.getElementById('tela-tema').classList.remove('ativa');
+  document.getElementById('tela-genero').classList.add('ativa');
+  document.getElementById('sub-headline').textContent = 'Antes de tudo, como você se identifica?';
+
+  // reset do tema
+  document.querySelectorAll('.tema-btn').forEach(b => {
+    b.classList.remove('ativo');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  temaAtivo = null;
+  document.getElementById('btn-revelar').disabled = true;
+  document.getElementById('card-frase').classList.remove('visivel');
+  document.getElementById('acoes').classList.remove('visivel');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function selecionarTema(el) {
   document.querySelectorAll('.tema-btn').forEach(b => {
@@ -546,7 +696,15 @@ function selecionarTema(el) {
 
 function revelarFrase() {
   if (!temaAtivo) return;
-  const lista = FRASES[temaAtivo];
+
+  // Monta a lista combinando frases gerais + frases extras do gênero selecionado
+  let lista = [...FRASES[temaAtivo]];
+  if (generoAtivo === 'feminino' && FRASES_FEMININO[temaAtivo]) {
+    lista = lista.concat(FRASES_FEMININO[temaAtivo]);
+  } else if (generoAtivo === 'masculino' && FRASES_MASCULINO[temaAtivo]) {
+    lista = lista.concat(FRASES_MASCULINO[temaAtivo]);
+  }
+
   const idx = indiceDoDia(lista.length);
   fraseAtual = lista[idx];
 
