@@ -152,10 +152,10 @@
         <span class="tema-nome">Gratidão</span>
         <span class="tema-desc">Presença e abundância</span>
       </button>
-      <button class="tema-btn" data-tema="crescimento" onclick="selecionarTema(this)" aria-pressed="false">
-        <span class="tema-icon">🌱</span>
-        <span class="tema-nome">Crescimento</span>
-        <span class="tema-desc">Evoluir a cada dia</span>
+      <button class="tema-btn" data-tema="crescimento" onclick="selecionarTema(this)" aria-pressed="false" id="btn-tema-crescimento">
+        <span class="tema-icon" id="icon-tema-crescimento">🌱</span>
+        <span class="tema-nome" id="nome-tema-crescimento">Crescimento</span>
+        <span class="tema-desc" id="desc-tema-crescimento">Evoluir a cada dia</span>
       </button>
       <button class="tema-btn" data-tema="reflexo" onclick="selecionarTema(this)" aria-pressed="false">
         <span class="tema-icon">✨</span>
@@ -600,6 +600,40 @@ const FRASES_FEMININO = {
   ]
 };
 
+// ── Tema exclusivo: Empoderamento (substitui Crescimento quando gênero = feminino) ──
+const FRASES_EMPODERAMENTO = [
+  "O poder feminino começa quando você define que não existe limite",
+  "Você não precisa se encolher para caber em lugar nenhum — sua grandeza é o seu lugar",
+  "Mulher que se conhece não pede licença para existir por inteiro",
+  "Sua força não precisa de validação — ela já nasceu inteira dentro de você",
+  "Toda mulher que decide ser livre já é, por si só, um ato de coragem",
+  "Você é a prova viva de que é possível recomeçar quantas vezes for preciso",
+  "Não existe teto que resista a uma mulher que decidiu se libertar",
+  "Sua voz tem peso — pare de pedir desculpas por ocupar espaço",
+  "Você não foi feita para ser pequena — foi feita para ser inteira",
+  "Mulheres que se apoiam constroem o que sozinhas levaria gerações",
+  "Seu valor não diminui só porque alguém não sabe enxergá-lo",
+  "Cada não que você disse para o que te diminuía foi um sim para você mesma",
+  "Você carrega dentro de si a força de todas as mulheres que vieram antes",
+  "Ser sensível e ser forte não são opostos — em você, são a mesma coisa",
+  "Liderar com o coração também é liderar — e é revolucionário",
+  "Você não precisa escolher entre ser gentil e ser respeitada",
+  "O espaço que você ocupa hoje foi conquistado por muita coragem silenciosa",
+  "Sua ambição não é defeito — é combustível",
+  "Mulher que se prioriza não é egoísta — é inteira",
+  "Você é capaz de reconstruir sua vida quantas vezes for necessário",
+  "Não suavize quem você é para fazer os outros se sentirem confortáveis",
+  "Cada cicatriz sua é prova de que você atravessou e não se rendeu",
+  "Seu corpo, sua voz, sua história — tudo isso é seu, e só seu",
+  "Você não precisa ser perfeita para ser admirável",
+  "A mulher que você está se tornando merece todo o seu respeito",
+  "Onde você está hoje já é resultado de muitas batalhas vencidas em silêncio",
+  "Você não é exigente demais — você só sabe o que merece",
+  "Construir-se sozinha também é uma forma poderosa de amor próprio",
+  "Sua sensibilidade é uma forma de inteligência que o mundo ainda está aprendendo a valorizar",
+  "Você não precisa de permissão para ser exatamente quem você é"
+];
+
 const FRASES_MASCULINO = {
   autoconhecimento: [
     "Força de verdade é admitir o que você sente, não escondê-lo",
@@ -660,6 +694,21 @@ function selecionarGenero(genero) {
   const sub = document.getElementById('sub-headline');
   sub.textContent = 'Escolha o tema que fala com você agora e receba sua frase do dia.';
 
+  // Troca o tema "Crescimento" por "Empoderamento" quando feminino
+  const icon = document.getElementById('icon-tema-crescimento');
+  const nome = document.getElementById('nome-tema-crescimento');
+  const desc = document.getElementById('desc-tema-crescimento');
+
+  if (genero === 'feminino') {
+    icon.textContent = '👑';
+    nome.textContent = 'Empoderamento';
+    desc.textContent = 'Sua força, sem pedir licença';
+  } else {
+    icon.textContent = '🌱';
+    nome.textContent = 'Crescimento';
+    desc.textContent = 'Evoluir a cada dia';
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -697,18 +746,26 @@ function selecionarTema(el) {
 function revelarFrase() {
   if (!temaAtivo) return;
 
-  // Monta a lista combinando frases gerais + frases extras do gênero selecionado
-  let lista = [...FRASES[temaAtivo]];
-  if (generoAtivo === 'feminino' && FRASES_FEMININO[temaAtivo]) {
-    lista = lista.concat(FRASES_FEMININO[temaAtivo]);
-  } else if (generoAtivo === 'masculino' && FRASES_MASCULINO[temaAtivo]) {
-    lista = lista.concat(FRASES_MASCULINO[temaAtivo]);
+  // Caso especial: tema "crescimento" + gênero feminino = usa lista de Empoderamento
+  let lista;
+  let nomeExibido = NOMES_TEMA[temaAtivo];
+
+  if (temaAtivo === 'crescimento' && generoAtivo === 'feminino') {
+    lista = [...FRASES_EMPODERAMENTO];
+    nomeExibido = 'Empoderamento';
+  } else {
+    lista = [...FRASES[temaAtivo]];
+    if (generoAtivo === 'feminino' && FRASES_FEMININO[temaAtivo]) {
+      lista = lista.concat(FRASES_FEMININO[temaAtivo]);
+    } else if (generoAtivo === 'masculino' && FRASES_MASCULINO[temaAtivo]) {
+      lista = lista.concat(FRASES_MASCULINO[temaAtivo]);
+    }
   }
 
   const idx = indiceDoDia(lista.length);
   fraseAtual = lista[idx];
 
-  document.getElementById('card-tema-tag').textContent = NOMES_TEMA[temaAtivo];
+  document.getElementById('card-tema-tag').textContent = nomeExibido;
   document.getElementById('card-texto').textContent = fraseAtual;
 
   const hoje = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
