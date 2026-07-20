@@ -102,6 +102,43 @@
     .genero-nome { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--ink); display: block; }
     .genero-desc { font-size: 12px; color: var(--ink-muted); margin-top: 2px; display: block; }
 
+    /* ── SPLASH SCREEN ── */
+    #splash-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #f5f1ea;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      transition: opacity 0.8s ease;
+    }
+    #splash-screen.saindo { opacity: 0; pointer-events: none; }
+
+    #splash-logo {
+      width: 140px; height: 140px;
+      object-fit: contain;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #splash-logo.visivel { opacity: 1; transform: translateY(0); }
+
+    #splash-nome {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px; font-weight: 500;
+      letter-spacing: 0.28em; color: #1a1a2e;
+      display: flex; align-items: flex-start; gap: 1px;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+    }
+    #splash-nome.visivel { opacity: 1; transform: translateY(0); }
+    .splash-r { font-weight: 800; color: #c9a84c; }
+    .splash-reg { font-size: 10px; color: #c9a84c; margin-top: 2px; }
+
+    #splash-linha {
+      width: 40px; height: 1px; background: #c9a84c;
+      opacity: 0; transition: opacity 0.5s ease 0.65s;
+    }
+    #splash-linha.visivel { opacity: 1; }
+
     .btn-voltar {
       background: none; border: none; cursor: pointer;
       font-size: 12px; color: var(--ink-muted);
@@ -192,6 +229,14 @@
   </style>
 </head>
 <body>
+<div id="splash-screen" aria-hidden="true">
+  <img id="splash-logo" src="icon-512x512.png" alt="" />
+  <div id="splash-nome">
+    WE MIRRO<span class="splash-r">R</span><span class="splash-reg">®</span>
+  </div>
+  <div id="splash-linha"></div>
+</div>
+
 <header>
   <svg class="mirror-icon" viewBox="0 0 52 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <rect x="10" y="2" width="32" height="44" rx="16" stroke="#0e0d0b" stroke-width="1.5"/>
@@ -1047,7 +1092,22 @@ async function lerFrase() {
     mostrarToast('Erro ao carregar voz. Tente novamente.');
   }
 }
-// ── PWA: registrar Service Worker ──
+// ── SPLASH SCREEN ──
+(function() {
+  const splash = document.getElementById('splash-screen');
+  const logo   = document.getElementById('splash-logo');
+  const nome   = document.getElementById('splash-nome');
+  const linha  = document.getElementById('splash-linha');
+
+  setTimeout(() => logo.classList.add('visivel'), 200);
+  setTimeout(() => nome.classList.add('visivel'), 500);
+  setTimeout(() => linha.classList.add('visivel'), 800);
+  setTimeout(() => {
+    splash.classList.add('saindo');
+    setTimeout(() => splash.remove(), 900);
+  }, 2400);
+})();
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/wemirror/sw.js')
