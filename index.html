@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WE MIRROR — Sua frase do dia</title>
   <meta name="description" content="Escolha seu tema e receba uma frase motivacional exclusiva WE MIRROR." />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="WE MIRROR" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -960,7 +968,14 @@ async function lerFrase() {
     mostrarToast('Erro ao carregar voz. Tente novamente.');
   }
 }
-
+// ── PWA: registrar Service Worker ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/wemirror/sw.js')
+      .then(() => console.log('SW registrado'))
+      .catch(err => console.log('SW erro:', err));
+  });
+}
 </script>
 </body>
 </html>
