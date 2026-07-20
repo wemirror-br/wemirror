@@ -111,6 +111,22 @@
     }
     .btn-voltar:hover { color: var(--ink-soft); }
 
+    /* ── PWA HINT ── */
+    .pwa-hint {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-top: 0.75rem;
+      padding: 12px 14px;
+      border-radius: var(--border-radius-md);
+      background: #fffbf2;
+      border: 1px solid var(--gold-light);
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+      width: 100%;
+    }
+    .pwa-hint svg { flex-shrink: 0; margin-top: 1px; }
+    .pwa-hint strong { color: var(--ink-soft); }
+
     /* ── INSTAGRAM ── */
     .insta-link {
       display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -184,6 +200,13 @@
         <span class="insta-cta"> · Siga-nos no Instagram</span>
       </span>
     </a>
+
+    <div class="pwa-hint">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" fill="#c9a84c"/>
+      </svg>
+      <span>Adicione à sua tela inicial e acesse como um app — toque em <strong>compartilhar</strong> e depois <strong>"Adicionar à Tela de Início"</strong></span>
+    </div>
 
   </div>
 
