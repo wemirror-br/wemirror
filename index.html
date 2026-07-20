@@ -111,6 +111,49 @@
     }
     .btn-voltar:hover { color: var(--ink-soft); }
 
+    /* ── MODAL NOTIFICAÇÃO ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(14,13,11,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-overlay.visivel { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem;
+      width: 100%; max-width: 340px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+      border: 1px solid var(--border);
+    }
+    .modal-icon { font-size: 32px; line-height: 1; }
+    .modal-title { font-size: 16px; font-weight: 500; color: var(--ink); text-align: center; }
+    .modal-sub { font-size: 13px; color: var(--ink-muted); text-align: center; line-height: 1.5; }
+    .horario-input {
+      width: 100%; height: 48px;
+      border-radius: 10px; border: 1px solid var(--border);
+      font-size: 22px; text-align: center; font-weight: 500;
+      color: var(--ink); background: var(--bg);
+    }
+    .modal-btns { display: flex; gap: 8px; width: 100%; }
+    .btn-modal {
+      flex: 1; height: 44px; border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 13px; cursor: pointer;
+      background: var(--bg-card); color: var(--ink-soft);
+      transition: background 0.15s;
+    }
+    .btn-modal:hover { background: var(--bg); }
+    .btn-modal-ok {
+      background: var(--ink); color: var(--gold);
+      border-color: var(--ink); font-weight: 500;
+    }
+    .btn-modal-ok:hover { background: #1e1d1a; }
+
     /* ── PWA HINT ── */
     .pwa-hint {
       display: flex; align-items: flex-start; gap: 8px;
@@ -279,6 +322,19 @@
 </main>
 
 <footer>© We Mirror — Todos os direitos reservados</footer>
+<div class="modal-overlay" id="modal-notif">
+  <div class="modal">
+    <div class="modal-icon">🔔</div>
+    <div class="modal-title">Receba sua frase todo dia</div>
+    <div class="modal-sub">Escolha o horário e a WE MIRROR te envia uma frase motivacional todos os dias.</div>
+    <input class="horario-input" type="time" id="horario-input" value="08:00" />
+    <div class="modal-btns">
+      <button class="btn-modal" onclick="fecharModal()">Agora não</button>
+      <button class="btn-modal btn-modal-ok" onclick="ativarNotificacoes()">Ativar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -995,9 +1051,48 @@ async function lerFrase() {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/wemirror/sw.js')
-      .then(() => console.log('SW registrado'))
+      .then(reg => {
+        console.log('SW registrado');
+        // Mostrar modal só na primeira visita e se nunca configurou
+        if (!localStorage.getItem('notif_configurada')) {
+          setTimeout(() => mostrarModalNotif(), 3000);
+        }
+      })
       .catch(err => console.log('SW erro:', err));
   });
+}
+
+// ── NOTIFICAÇÕES ──
+function mostrarModalNotif() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') return;
+  document.getElementById('modal-notif').classList.add('visivel');
+}
+
+function fecharModal() {
+  document.getElementById('modal-notif').classList.remove('visivel');
+  localStorage.setItem('notif_configurada', 'nao');
+}
+
+async function ativarNotificacoes() {
+  const permissao = await Notification.requestPermission();
+  if (permissao !== 'granted') {
+    fecharModal();
+    mostrarToast('Permissão negada — você pode ativar nas configurações do celular.');
+    return;
+  }
+
+  const input = document.getElementById('horario-input').value;
+  const [hora, minuto] = input.split(':').map(Number);
+
+  const reg = await navigator.serviceWorker.ready;
+  reg.active.postMessage({ tipo: 'agendar', hora, minuto });
+
+  localStorage.setItem('notif_configurada', 'sim');
+  localStorage.setItem('notif_horario', input);
+
+  fecharModal();
+  mostrarToast(`✓ Alerta ativado para as ${input} todos os dias!`);
 }
 </script>
 </body>
