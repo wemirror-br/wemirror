@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WE MIRROR — Sua frase do dia</title>
   <meta name="description" content="Escolha seu tema e receba uma frase motivacional exclusiva WE MIRROR." />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M35JY5ZTM1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-M35JY5ZTM1');
+  </script>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1a2e" />
@@ -876,6 +884,13 @@ let fraseAtual = '';
 
 function selecionarGenero(genero) {
   generoAtivo = genero;
+
+  // Evento Google Analytics
+  gtag('event', 'selecao_genero', {
+    'event_category': 'engajamento',
+    'event_label': genero
+  });
+
   document.getElementById('tela-genero').classList.remove('ativa');
   document.getElementById('tela-tema').classList.add('ativa');
 
@@ -952,6 +967,13 @@ function revelarFrase() {
 
   const idx = indiceDoDia(lista.length);
   fraseAtual = lista[idx];
+
+  // Evento Google Analytics
+  gtag('event', 'frase_revelada', {
+    'event_category': 'engajamento',
+    'event_label': nomeExibido,
+    'genero': generoAtivo
+  });
 
   document.getElementById('card-tema-tag').textContent = nomeExibido;
   document.getElementById('card-texto').textContent = fraseAtual;
@@ -1062,6 +1084,12 @@ async function lerFrase() {
     label.textContent = 'Toque para pausar';
 
     audioAtual.play();
+
+  // Evento Google Analytics
+  gtag('event', 'ouviu_frase', {
+    'event_category': 'engajamento',
+    'event_label': generoAtivo
+  });
 
     audioAtual.onended = () => {
       tocando = false;
