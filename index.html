@@ -209,6 +209,62 @@
     .pwa-hint svg { flex-shrink: 0; margin-top: 1px; }
     .pwa-hint strong { color: var(--ink-soft); }
 
+    /* ── BOTÃO INSTALAR APP ── */
+    .btn-instalar {
+      display: none;
+      width: 100%; height: 48px;
+      border-radius: 100px;
+      border: none;
+      background: var(--ink);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; gap: 8px;
+      align-items: center; justify-content: center;
+      margin-top: 0.75rem;
+      transition: background 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-instalar.visivel { display: flex; }
+    .btn-instalar:hover { background: #1e1d1a; transform: translateY(-1px); }
+
+    /* ── MODAL iOS ── */
+    .modal-ios {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(14,13,11,0.6);
+      display: flex; align-items: flex-end;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-ios.visivel { opacity: 1; pointer-events: all; }
+    .modal-ios-box {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+    .modal-ios-title { font-size: 15px; font-weight: 500; color: var(--ink); text-align: center; }
+    .modal-ios-steps { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .ios-step { display: flex; align-items: center; gap: 12px; }
+    .ios-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--ink); color: var(--gold);
+      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ios-step-txt { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+    .ios-step-txt strong { color: var(--ink); }
+    .btn-ios-fechar {
+      width: 100%; height: 44px; border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg); color: var(--ink-muted);
+      font-size: 13px; cursor: pointer;
+    }
+
     /* ── INSTAGRAM ── */
     .insta-link {
       display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -297,7 +353,33 @@
       <span>Adicione à sua tela inicial e acesse como um app — toque em <strong>compartilhar</strong> e depois <strong>"Adicionar à Tela de Início"</strong></span>
     </div>
 
+    <button class="btn-instalar" id="btn-instalar" onclick="instalarApp()">
+      📲 Instalar app WE MIRROR
+    </button>
+
   </div>
+
+<!-- Modal tutorial iOS -->
+<div class="modal-ios" id="modal-ios">
+  <div class="modal-ios-box">
+    <div class="modal-ios-title">📲 Instalar app WE MIRROR</div>
+    <div class="modal-ios-steps">
+      <div class="ios-step">
+        <div class="ios-step-num">1</div>
+        <div class="ios-step-txt">Toque no botão <strong>compartilhar</strong> ↑ na barra do Safari (ícone de quadrado com seta)</div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">2</div>
+        <div class="ios-step-txt">Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong></div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">3</div>
+        <div class="ios-step-txt">Toque em <strong>"Adicionar"</strong> no canto superior direito</div>
+      </div>
+    </div>
+    <button class="btn-ios-fechar" onclick="fecharModalIOS()">Entendi!</button>
+  </div>
+</div>
 
   <!-- ── TELA 2: TEMA ── -->
   <div class="tela" id="tela-tema">
@@ -1126,6 +1208,50 @@ async function lerFrase() {
     setTimeout(() => splash.remove(), 900);
   }, 2200);
 })();
+
+// ── INSTALAÇÃO PWA ──
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isEmStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!isEmStandalone) {
+    document.getElementById('btn-instalar').classList.add('visivel');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('btn-instalar').classList.remove('visivel');
+  deferredPrompt = null;
+  mostrarToast('App instalado com sucesso! ✓');
+});
+
+if (isIOS && !isEmStandalone) {
+  document.getElementById('btn-instalar').classList.add('visivel');
+}
+
+async function instalarApp() {
+  if (isIOS) {
+    document.getElementById('modal-ios').classList.add('visivel');
+    return;
+  }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const resultado = await deferredPrompt.userChoice;
+    if (resultado.outcome === 'accepted') {
+      document.getElementById('btn-instalar').classList.remove('visivel');
+      mostrarToast('App instalado! ✓');
+    }
+    deferredPrompt = null;
+  }
+}
+
+function fecharModalIOS() {
+  document.getElementById('modal-ios').classList.remove('visivel');
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
