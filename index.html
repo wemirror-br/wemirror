@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WE MIRROR — Sua frase do dia</title>
   <meta name="description" content="Escolha seu tema e receba uma frase motivacional exclusiva WE MIRROR." />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M35JY5ZTM1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-M35JY5ZTM1');
+  </script>
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1a2e" />
@@ -75,6 +83,11 @@
     .acoes.visivel { display: flex; }
     .btn-acao { width: 100%; height: 44px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink-soft); cursor: pointer; transition: border-color 0.2s, background 0.2s; letter-spacing: 0.02em; }
     .btn-acao:hover { border-color: var(--gold-light); background: #fffbf2; }
+    .btn-acao-story {
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: white; border: none; font-weight: 500;
+    }
+    .btn-acao-story:hover { opacity: 0.9; background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     .btn-nova { background: transparent; border: 1px solid var(--border); color: var(--ink-muted); }
     footer { width: 100%; padding: 1.5rem; text-align: center; font-size: 11px; color: var(--ink-muted); letter-spacing: 0.05em; border-top: 1px solid var(--border); margin-top: auto; }
     .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--gold); font-size: 13px; padding: 10px 20px; border-radius: 100px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; z-index: 99; }
@@ -113,31 +126,25 @@
     }
     #splash-screen.saindo { opacity: 0; pointer-events: none; }
 
-    #splash-logo {
-      width: 140px; height: 140px;
-      object-fit: contain;
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    #splash-logo.visivel { opacity: 1; transform: translateY(0); }
-
     #splash-nome {
       font-family: 'Inter', sans-serif;
-      font-size: 22px; font-weight: 500;
-      letter-spacing: 0.28em; color: #1a1a2e;
+      font-size: 28px; font-weight: 500;
+      letter-spacing: 0.32em; color: #1a1a2e;
       display: flex; align-items: flex-start; gap: 1px;
-      opacity: 0; transform: translateY(12px);
-      transition: opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+      opacity: 0; transform: scale(0.94);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
-    #splash-nome.visivel { opacity: 1; transform: translateY(0); }
+    #splash-nome.visivel { opacity: 1; transform: scale(1); }
     .splash-r { font-weight: 800; color: #c9a84c; }
-    .splash-reg { font-size: 10px; color: #c9a84c; margin-top: 2px; }
+    .splash-reg { font-size: 11px; color: #c9a84c; margin-top: 3px; }
 
     #splash-linha {
       width: 40px; height: 1px; background: #c9a84c;
-      opacity: 0; transition: opacity 0.5s ease 0.65s;
+      opacity: 0; transform: scaleX(0);
+      transform-origin: center;
+      transition: opacity 0.5s ease 0.45s, transform 0.5s ease 0.45s;
     }
-    #splash-linha.visivel { opacity: 1; }
+    #splash-linha.visivel { opacity: 1; transform: scaleX(1); }
 
     .btn-voltar {
       background: none; border: none; cursor: pointer;
@@ -148,7 +155,45 @@
     }
     .btn-voltar:hover { color: var(--ink-soft); }
 
-    /* ── MODAL NOTIFICAÇÃO ── */
+    /* ── MODO NOTURNO ── */
+    body.dark-mode {
+      --ink: #f0e6cc;
+      --ink-soft: #c9b99a;
+      --ink-muted: #7a6a55;
+      --bg: #0e0d0b;
+      --bg-card: #1a1814;
+      --border: rgba(255,255,255,0.08);
+      --gold-light: #5a4a2a;
+    }
+    body.dark-mode header { background: #0e0d0b; }
+    body.dark-mode .genero-btn { background: #1a1814; }
+    body.dark-mode .tema-btn { background: #1a1814; }
+    body.dark-mode .card-frase { background: #1a1814; }
+    body.dark-mode .card-texto { color: #f0e6cc; }
+    body.dark-mode .insta-link { background: #1a1814; }
+    body.dark-mode .pwa-hint { background: #1a1814; border-color: #3a2a1a; }
+    body.dark-mode .btn-instalar { background: #c9a84c; color: #0e0d0b; }
+    body.dark-mode .modal { background: #1a1814; }
+    body.dark-mode .modal-ios-box { background: #1a1814; }
+    body.dark-mode select, body.dark-mode input[type=time] { background: #1a1814; color: #f0e6cc; border-color: rgba(255,255,255,0.1); }
+    body.dark-mode #splash-screen { background: #0e0d0b; }
+    body.dark-mode #splash-nome { color: #f0e6cc; }
+
+    /* Botão modo noturno */
+    .btn-dark-mode {
+      position: fixed;
+      top: 14px; right: 16px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      transition: background 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-dark-mode:hover { transform: scale(1.1); }
     .modal-overlay {
       position: fixed; inset: 0;
       background: rgba(14,13,11,0.5);
@@ -207,6 +252,62 @@
     .pwa-hint svg { flex-shrink: 0; margin-top: 1px; }
     .pwa-hint strong { color: var(--ink-soft); }
 
+    /* ── BOTÃO INSTALAR APP ── */
+    .btn-instalar {
+      display: none;
+      width: 100%; height: 48px;
+      border-radius: 100px;
+      border: none;
+      background: var(--ink);
+      color: var(--gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; gap: 8px;
+      align-items: center; justify-content: center;
+      margin-top: 0.75rem;
+      transition: background 0.2s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-instalar.visivel { display: flex; }
+    .btn-instalar:hover { background: #1e1d1a; transform: translateY(-1px); }
+
+    /* ── MODAL iOS ── */
+    .modal-ios {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(14,13,11,0.6);
+      display: flex; align-items: flex-end;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-ios.visivel { opacity: 1; pointer-events: all; }
+    .modal-ios-box {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 1.5rem;
+      width: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1rem;
+    }
+    .modal-ios-title { font-size: 15px; font-weight: 500; color: var(--ink); text-align: center; }
+    .modal-ios-steps { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .ios-step { display: flex; align-items: center; gap: 12px; }
+    .ios-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--ink); color: var(--gold);
+      font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ios-step-txt { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+    .ios-step-txt strong { color: var(--ink); }
+    .btn-ios-fechar {
+      width: 100%; height: 44px; border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg); color: var(--ink-muted);
+      font-size: 13px; cursor: pointer;
+    }
+
     /* ── INSTAGRAM ── */
     .insta-link {
       display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -230,12 +331,13 @@
 </head>
 <body>
 <div id="splash-screen" aria-hidden="true">
-  <img id="splash-logo" src="icon-512x512.png" alt="" />
   <div id="splash-nome">
     WE MIRRO<span class="splash-r">R</span><span class="splash-reg">®</span>
   </div>
   <div id="splash-linha"></div>
 </div>
+
+<button class="btn-dark-mode" id="btn-dark-mode" onclick="alternarModo()" aria-label="Alternar modo noturno">🌙</button>
 
 <header>
   <svg class="mirror-icon" viewBox="0 0 52 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -296,7 +398,33 @@
       <span>Adicione à sua tela inicial e acesse como um app — toque em <strong>compartilhar</strong> e depois <strong>"Adicionar à Tela de Início"</strong></span>
     </div>
 
+    <button class="btn-instalar" id="btn-instalar" onclick="instalarApp()">
+      📲 Instalar app WE MIRROR
+    </button>
+
   </div>
+
+<!-- Modal tutorial iOS -->
+<div class="modal-ios" id="modal-ios">
+  <div class="modal-ios-box">
+    <div class="modal-ios-title">📲 Instalar app WE MIRROR</div>
+    <div class="modal-ios-steps">
+      <div class="ios-step">
+        <div class="ios-step-num">1</div>
+        <div class="ios-step-txt">Toque no botão <strong>compartilhar</strong> ↑ na barra do Safari (ícone de quadrado com seta)</div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">2</div>
+        <div class="ios-step-txt">Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong></div>
+      </div>
+      <div class="ios-step">
+        <div class="ios-step-num">3</div>
+        <div class="ios-step-txt">Toque em <strong>"Adicionar"</strong> no canto superior direito</div>
+      </div>
+    </div>
+    <button class="btn-ios-fechar" onclick="fecharModalIOS()">Entendi!</button>
+  </div>
+</div>
 
   <!-- ── TELA 2: TEMA ── -->
   <div class="tela" id="tela-tema">
@@ -360,6 +488,9 @@
     </div>
 
     <div class="acoes" id="acoes">
+      <button class="btn-acao btn-acao-story" onclick="compartilharStory()">
+        📸 Compartilhar no Story do Instagram
+      </button>
       <button class="btn-acao" onclick="compartilhar()">Compartilhar esta frase</button>
       <button class="btn-acao btn-nova" onclick="novaTema()">Escolher outro tema</button>
     </div>
@@ -883,6 +1014,13 @@ let fraseAtual = '';
 
 function selecionarGenero(genero) {
   generoAtivo = genero;
+
+  // Evento Google Analytics
+  gtag('event', 'selecao_genero', {
+    'event_category': 'engajamento',
+    'event_label': genero
+  });
+
   document.getElementById('tela-genero').classList.remove('ativa');
   document.getElementById('tela-tema').classList.add('ativa');
 
@@ -960,6 +1098,13 @@ function revelarFrase() {
   const idx = indiceDoDia(lista.length);
   fraseAtual = lista[idx];
 
+  // Evento Google Analytics
+  gtag('event', 'frase_revelada', {
+    'event_category': 'engajamento',
+    'event_label': nomeExibido,
+    'genero': generoAtivo
+  });
+
   document.getElementById('card-tema-tag').textContent = nomeExibido;
   document.getElementById('card-texto').textContent = fraseAtual;
 
@@ -984,6 +1129,133 @@ function novaTema() {
   document.getElementById('card-frase').classList.remove('visivel');
   document.getElementById('acoes').classList.remove('visivel');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function compartilharStory() {
+  if (!fraseAtual) return;
+
+  mostrarToast('Gerando imagem...');
+
+  // Criar canvas com a imagem do Story
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext('2d');
+
+  // Fundo gradiente elegante
+  const grad = ctx.createLinearGradient(0, 0, 0, 1920);
+  grad.addColorStop(0, '#f5f1ea');
+  grad.addColorStop(1, '#ede8df');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1080, 1920);
+
+  // Linha dourada topo
+  ctx.fillStyle = '#c9a84c';
+  ctx.fillRect(440, 200, 200, 2);
+
+  // WE MIRROR + ® posicionado corretamente
+  ctx.fillStyle = '#1a1a2e';
+  ctx.font = 'bold 72px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('WE MIRROR', 540, 280);
+
+  // ® — posicionado logo após o texto, calculado pela largura real
+  const larguraNome = ctx.measureText('WE MIRROR').width;
+  const regX = 540 + larguraNome / 2 + 8;
+  const regY = 245;
+  ctx.font = 'bold 32px serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('®', regX, regY);
+  ctx.textAlign = 'center';
+
+  // Linha dourada
+  ctx.fillStyle = '#c9a84c';
+  ctx.fillRect(440, 320, 200, 2);
+
+  // Aspas decorativas
+  ctx.fillStyle = '#e8d5a0';
+  ctx.font = 'italic 220px Georgia';
+  ctx.textAlign = 'left';
+  ctx.fillText('"', 80, 680);
+
+  // Frase motivacional — quebra de linha automática
+  ctx.fillStyle = '#1a1a2e';
+  ctx.font = 'italic 68px Georgia';
+  ctx.textAlign = 'center';
+
+  const palavras = fraseAtual.split(' ');
+  const linhas = [];
+  let linhaAtual = '';
+  const maxLargura = 860;
+
+  for (const palavra of palavras) {
+    const teste = linhaAtual ? linhaAtual + ' ' + palavra : palavra;
+    if (ctx.measureText(teste).width > maxLargura && linhaAtual) {
+      linhas.push(linhaAtual);
+      linhaAtual = palavra;
+    } else {
+      linhaAtual = teste;
+    }
+  }
+  if (linhaAtual) linhas.push(linhaAtual);
+
+  const alturaBloco = linhas.length * 90;
+  const yInicio = 960 - alturaBloco / 2;
+
+  linhas.forEach((linha, i) => {
+    ctx.fillText(linha, 540, yInicio + i * 90);
+  });
+
+  // Linha divisória
+  ctx.fillStyle = '#c9a84c';
+  ctx.fillRect(440, yInicio + alturaBloco + 40, 200, 2);
+
+  // Espelhos que falam
+  ctx.fillStyle = '#9a9690';
+  ctx.font = 'italic 42px Georgia';
+  ctx.fillText('Espelhos que falam', 540, yInicio + alturaBloco + 110);
+
+  // Tema
+  const tema = document.getElementById('card-tema-tag').textContent;
+  ctx.fillStyle = '#c9a84c';
+  ctx.font = '500 36px Inter, sans-serif';
+  ctx.fillText(tema.toUpperCase(), 540, yInicio + alturaBloco + 170);
+
+  // Rodapé
+  ctx.fillStyle = '#bbb0a0';
+  ctx.font = '34px Inter, sans-serif';
+  ctx.fillText('@wemirror.oficial', 540, 1780);
+
+  ctx.fillStyle = '#c9a84c';
+  ctx.fillRect(440, 1800, 200, 2);
+
+  // Converter para blob e compartilhar
+  canvas.toBlob(async (blob) => {
+    const file = new File([blob], 'wemirror-frase.png', { type: 'image/png' });
+
+    // Tentar Web Share API com arquivo (abre Instagram Stories no mobile)
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'WE MIRROR® — Minha frase do dia',
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') baixarImagem(canvas);
+      }
+    } else {
+      // Fallback: baixar a imagem
+      baixarImagem(canvas);
+      mostrarToast('Imagem salva! Abra o Instagram e poste no Story.');
+    }
+  }, 'image/png');
+}
+
+function baixarImagem(canvas) {
+  const link = document.createElement('a');
+  link.download = 'wemirror-story.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
 function compartilhar() {
@@ -1070,6 +1342,12 @@ async function lerFrase() {
 
     audioAtual.play();
 
+  // Evento Google Analytics
+  gtag('event', 'ouviu_frase', {
+    'event_category': 'engajamento',
+    'event_label': generoAtivo
+  });
+
     audioAtual.onended = () => {
       tocando = false;
       btn.classList.remove('tocando');
@@ -1092,21 +1370,87 @@ async function lerFrase() {
     mostrarToast('Erro ao carregar voz. Tente novamente.');
   }
 }
+// ── MODO NOTURNO ──
+function aplicarModo(dark) {
+  document.body.classList.toggle('dark-mode', dark);
+  document.getElementById('btn-dark-mode').textContent = dark ? '☀️' : '🌙';
+  localStorage.setItem('dark_mode', dark ? '1' : '0');
+}
+
+function alternarModo() {
+  const isDark = document.body.classList.contains('dark-mode');
+  aplicarModo(!isDark);
+}
+
+// Inicializar modo — preferência salva ou automático por horário
+(function() {
+  const salvo = localStorage.getItem('dark_mode');
+  if (salvo !== null) {
+    aplicarModo(salvo === '1');
+  } else {
+    // Automático: após 19h ou antes das 6h ativa modo noturno
+    const hora = new Date().getHours();
+    aplicarModo(hora >= 19 || hora < 6);
+  }
+})();
+
 // ── SPLASH SCREEN ──
 (function() {
   const splash = document.getElementById('splash-screen');
-  const logo   = document.getElementById('splash-logo');
   const nome   = document.getElementById('splash-nome');
   const linha  = document.getElementById('splash-linha');
 
-  setTimeout(() => logo.classList.add('visivel'), 200);
-  setTimeout(() => nome.classList.add('visivel'), 500);
-  setTimeout(() => linha.classList.add('visivel'), 800);
+  setTimeout(() => nome.classList.add('visivel'), 200);
+  setTimeout(() => linha.classList.add('visivel'), 400);
   setTimeout(() => {
     splash.classList.add('saindo');
     setTimeout(() => splash.remove(), 900);
-  }, 2400);
+  }, 2200);
 })();
+
+// ── INSTALAÇÃO PWA ──
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isEmStandalone = window.matchMedia('(display-mode: standalone)').matches
+                    || window.navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!isEmStandalone) {
+    document.getElementById('btn-instalar').classList.add('visivel');
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('btn-instalar').classList.remove('visivel');
+  deferredPrompt = null;
+  mostrarToast('App instalado com sucesso! ✓');
+});
+
+if (isIOS && !isEmStandalone) {
+  document.getElementById('btn-instalar').classList.add('visivel');
+}
+
+async function instalarApp() {
+  if (isIOS) {
+    document.getElementById('modal-ios').classList.add('visivel');
+    return;
+  }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const resultado = await deferredPrompt.userChoice;
+    if (resultado.outcome === 'accepted') {
+      document.getElementById('btn-instalar').classList.remove('visivel');
+      mostrarToast('App instalado! ✓');
+    }
+    deferredPrompt = null;
+  }
+}
+
+function fecharModalIOS() {
+  document.getElementById('modal-ios').classList.remove('visivel');
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
